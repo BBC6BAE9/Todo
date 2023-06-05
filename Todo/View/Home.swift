@@ -21,32 +21,56 @@ struct Home: View {
             .labelsHidden()
             .datePickerStyle(.graphical)
             
-            DisclosureGroup(isExpanded: $showPendingTasks) {
-                // Custom Core Data Filter View, which will display pending task on this Day
-                CustomFilteringDataView(displayPendingTask: true, filterDate: filterDate) {
-                    TaskRow(task: $0, isPendingTask: true)
+            CustomFilteringDataView(filterDate:$filterDate){ pendingTasks, completedTasks in
+                DisclosureGroup(isExpanded: $showPendingTasks) {
+                    if pendingTasks.isEmpty {
+                        Text("No Task Found")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }else{
+                        ForEach(pendingTasks) {
+                            TaskRow(task: $0, isPendingTask: true)
+                        }
+                    }
+                } label: {
+                    Text("Pending Task's \(pendingTasks.isEmpty ? "" : "\(pendingTasks.count)")")
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
-            } label: {
-                Text("Pending Task's")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                
+                DisclosureGroup(isExpanded: $showCompletedTasks) {
+                    if completedTasks.isEmpty {
+                        Text("No Task Found")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }else{
+                        ForEach(completedTasks) {
+                            TaskRow(task: $0, isPendingTask: false)
+                        }
+                    }
+                } label: {
+                    Text("Pending Task's \(completedTasks.isEmpty ? "" : "\(completedTasks .count)")")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
             }
             
-            DisclosureGroup(isExpanded: $showCompletedTasks) {
-                // Custom Core Data Filter View, which will display completed task on this Day
-                CustomFilteringDataView(displayPendingTask: false, filterDate: filterDate) {
-                    TaskRow(task: $0, isPendingTask: false)
-                }
-            } label: {
-                Text("Pending Task's")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
+            
         }.toolbar {
             Button {
-                /// Simply opening Pending task View
-                /// Then add an empty task
-                let
+                do {
+                    /// Simply opening Pending task View
+                    /// Then add an empty task
+                    let task = Task(context: env.managedObjectContext)
+                    task.id = .init()
+                    task.date = filterDate
+                    task.title = ""
+                    task.isCompleted = false
+                    try env.managedObjectContext.save()
+                    showPendingTasks = true
+                } catch {
+                    print(error.localizedDescription)
+                }
             } label: {
                 HStack{
                     Image(systemName: "plus.circle.fill")
@@ -68,7 +92,7 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct TaskRow:View {
-    var task: Task
+    @ObservedObject var task: Task
     var isPendingTask: Bool
     
     @Environment(\.self) private var env
@@ -76,44 +100,71 @@ struct TaskRow:View {
     var body: some View {
         HStack(spacing: 12){
             Button {
-                
+                task.isCompleted.toggle()
+                save()
             } label: {
-                Image(systemName: task.isCompleted ? "checkmaek.circle.fill" : "circle")
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.title)
                     .foregroundColor(.blue)
-                VStack(alignment:.leading, spacing: 4) {
-                    TextField("Task Title", text: .init(get: {
-                        return task.title ?? ""
-                    }, set: { value in
-                        task.title = value
-                    }))
-                    .focused($showKeyboard)
-                    .onSubmit {
-                        removeEmptyTask()
-                        save()
-                    }
-                }
-                
-                DatePicker(selection: .init(get: {
-                    return task.date ?? .init()
+            }
+            .buttonStyle(.plain)
+            VStack(alignment:.leading, spacing: 4) {
+                TextField("Task Title", text: .init(get: {
+                    return task.title ?? ""
                 }, set: { value in
-                    task.date = value
+                    task.title = value
+                }))
+                .focused($showKeyboard)
+                .onSubmit {
+                    removeEmptyTask()
                     save()
-                }), displayedComponents: [.hourAndMinute]) {
-                    
                 }
-                .labelsHidden()
+                .foregroundColor(isPendingTask ? .primary : .gray)
+                .strikethrough(!isPendingTask, pattern: .solid, color: .secondary)
+                Text((task.date ?? .init()).formatted(date: .omitted, time: .shortened))
+                    .font(.callout)
+                    .foregroundColor(.gray)
+                    .overlay {
+                        DatePicker(selection: .init(get: {
+                            return task.date ?? .init()
+                        }, set: { value in
+                            task.date = value
+                            save()
+                        }), displayedComponents: [.hourAndMinute]) {
+                            
+                        }
+                        .labelsHidden()
+                        .blendMode(.destinationOver)
+                    }
             }
             .onAppear{
                 if (task.title ?? "").isEmpty{
                     showKeyboard = true
                 }
             }
+            .onDisappear{
+                removeEmptyTask()
+                save()
+            }
             .onChange(of: env.scenePhase) { newValue in
                 if (newValue != .active){
-                    removeEmptyTask()
-                    save()
+                    showKeyboard = false
+                    DispatchQueue.main.async {
+                        removeEmptyTask()
+                        save()
+                    }
                 }
+            }
+            .swipeActions {
+                Button(role: .destructive) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+                        env.managedObjectContext.delete(task)
+                        save()
+                    }
+                } label: {
+                    Image(systemName: "trash.fill")
+                }
+
             }
         }
     }

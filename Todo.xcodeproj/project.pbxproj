@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F29A0412A2DCB1A00E45E15 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F29A0402A2DCB1A00E45E15 /* Persistence.swift */; };
 		5FCD65D22A2D9DE200A53B8D /* TodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCD65D12A2D9DE200A53B8D /* TodoApp.swift */; };
 		5FCD65D42A2D9DE200A53B8D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCD65D32A2D9DE200A53B8D /* ContentView.swift */; };
 		5FCD65D62A2D9DE300A53B8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FCD65D52A2D9DE300A53B8D /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F29A0402A2DCB1A00E45E15 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		5FCD65CE2A2D9DE200A53B8D /* Todo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FCD65D12A2D9DE200A53B8D /* TodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoApp.swift; sourceTree = "<group>"; };
 		5FCD65D32A2D9DE200A53B8D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				5FCD66002A2D9F0E00A53B8D /* View */,
 				5FCD65D12A2D9DE200A53B8D /* TodoApp.swift */,
 				5FCD65D32A2D9DE200A53B8D /* ContentView.swift */,
+				5F29A0402A2DCB1A00E45E15 /* Persistence.swift */,
 				5FCD65D52A2D9DE300A53B8D /* Assets.xcassets */,
 				5FCD65DC2A2D9DE300A53B8D /* Todo.xcdatamodeld */,
 				5FCD65D72A2D9DE300A53B8D /* Preview Content */,
@@ -277,6 +280,7 @@
 				5FCD65D42A2D9DE200A53B8D /* ContentView.swift in Sources */,
 				5FCD66042A2DA18700A53B8D /* CustomFilteringDataView.swift in Sources */,
 				5FCD66022A2D9F3D00A53B8D /* Home.swift in Sources */,
+				5F29A0412A2DCB1A00E45E15 /* Persistence.swift in Sources */,
 				5FCD65D22A2D9DE200A53B8D /* TodoApp.swift in Sources */,
 				5FCD65DE2A2D9DE300A53B8D /* Todo.xcdatamodeld in Sources */,
 			);
@@ -365,7 +369,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -419,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
